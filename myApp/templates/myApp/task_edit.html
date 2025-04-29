@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+  <div class="container mt-5">
+    <h2 class="mb-4">Edit Your Task</h2>
+    <div class="card shadow-sm p-4">
+      <form action="" method="post">
+        {% csrf_token %}
+        {% bootstrap_form form layout='vertical' %}
+        <div class="mt-3 text-end">
+          <button type="submit" class="btn btn-outline-primary">Update Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock content %}

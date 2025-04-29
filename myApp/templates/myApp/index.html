@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Hero Section -->
+    <div class="jumbotron bg-primary text-white p-5 rounded shadow">
+        <h1 class="display-4 text-center">Welcome to Task Manager</h1>
+        <p class="lead text-center">Easily manage your tasks, track progress, and stay organized.</p>
+        <div class="text-center mt-4">
+            <a href="{% url 'task_new' %}" class="btn btn-light btn-lg me-2">Add a New Task</a>
+            <a href="{% url 'task_list' %}" class="btn btn-outline-light btn-lg">View All Tasks</a>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h4 class="card-title">Add Tasks</h4>
+                    <p class="card-text">Quickly add tasks to keep track of your work.</p>
+                    <a href="{% url 'task_new' %}" class="btn btn-primary">Add Task</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h4 class="card-title">View Tasks</h4>
+                    <p class="card-text">See all your pending and completed tasks in one place.</p>
+                    <a href="{% url 'task_list' %}" class="btn btn-primary">View Tasks</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h4 class="card-title">Track Progress</h4>
+                    <p class="card-text">Mark tasks as complete to track your achievements.</p>
+                    <a href="{% url 'task_list' %}" class="btn btn-primary">Track Progress</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="mt-5 text-center text-muted">
+        <p>&copy; 2025 Task Manager. All rights reserved.</p>
+    </footer>
+</div>
+{% endblock content %}
