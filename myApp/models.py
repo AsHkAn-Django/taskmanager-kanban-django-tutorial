@@ -5,7 +5,7 @@ from django.db import models
 class Task(models.Model):
     name = models.CharField(max_length=264)
     is_complete = models.BooleanField(default=False)
-    order = models.PositiveBigIntegerField(default=0, blank=True, null=True)
+    order = models.PositiveBigIntegerField(default=0)
     
     class Meta:
         ordering = ['order']
