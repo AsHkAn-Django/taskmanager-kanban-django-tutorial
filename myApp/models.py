@@ -5,7 +5,7 @@ from django.db import models
 class Task(models.Model):
     name = models.CharField(max_length=264)
     is_complete = models.BooleanField(default=False)
-    order = models.PositiveBigIntegerField(default=0)
+    order = models.PositiveBigIntegerField(null=True, blank=False)
     
     class Meta:
         ordering = ['order']
@@ -20,3 +20,5 @@ class Task(models.Model):
         if is_new and self.order is None:
             self.order = self.pk
             super().save(update_fields=['order'])
+            
+        return super().save(*args, **kwargs)
