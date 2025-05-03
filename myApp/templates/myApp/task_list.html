@@ -10,7 +10,7 @@
 
   <div class="row" id="item-list">
     {% for task in tasks %}
-    <div class="col-md-4 mb-4" data-id="{{ item.id }}">
+    <div class="col-md-4 mb-4 task" data-id="{{ task.id }}">
       {% if task.is_complete %}
       <div class="card shadow-sm border-success">
         <div class="card-header bg-success text-white">
@@ -62,7 +62,7 @@
       // 4. Function triggered when the user finishes dragging an item
       onEnd: function () {
         // 5. Get all the list items after they’ve been reordered
-        const items = sortableList.querySelectorAll("li");
+        const items = sortableList.querySelectorAll(".task");
 
         // 6. Map over them to create an array of their data-id attributes (as strings)
         const order = Array.from(items).map((item) => item.dataset.id);

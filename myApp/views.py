@@ -25,9 +25,6 @@ class TaskListView(ListView):
     template_name = 'myApp/task_list.html'
     context_object_name = 'tasks'
 
-    def get_queryset(self):
-        return Task.objects.order_by('is_complete')
-
 
 class TaskUpdateView(UpdateView):
     model = Task
