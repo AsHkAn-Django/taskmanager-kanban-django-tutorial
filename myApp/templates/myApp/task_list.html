@@ -1,34 +1,90 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4 text-center text-primary">Your Task List</h2>
 
-{% block content %}
-  <div class="container mt-5">
-    <h2 class="mb-4 text-center text-primary">Your Task List</h2>
+  <!-- Django's template tag for CSRF token -->
+  {% csrf_token %}
 
-    <div class="row">
-      {% for task in tasks %}
-        <div class="col-md-4 mb-4">
-          {% if task.is_complete %}
-            <div class="card shadow-sm border-success">
-              <div class="card-header bg-success text-white">
-                <strong>Completed</strong>
-              </div>
-          {% else %}
-            <div class="card shadow-sm border-warning">
-              <div class="card-header bg-warning text-white">
-                <strong>Pending</strong>
-              </div>
+  <!-- Hidden input to get the CSRF token -->
+  <input type="hidden" id="csrf-token" value="{{ csrf_token }}" />
+
+  <div class="row" id="item-list">
+    {% for task in tasks %}
+    <div class="col-md-4 mb-4 task" data-id="{{ task.id }}">
+      {% if task.is_complete %}
+      <div class="card shadow-sm border-success">
+        <div class="card-header bg-success text-white">
+          <strong>Completed</strong>
+        </div>
+        {% else %}
+        <div class="card shadow-sm border-warning">
+          <div class="card-header bg-warning text-white">
+            <strong>Pending</strong>
+          </div>
           {% endif %}
-            <div class="card-body">
-              <h5 class="card-title text-center">{{ task.name }}</h5>
-              <div class="d-grid gap-2">
-                <a href="{% url 'task_complete' task.id %}" class="btn btn-outline-success">Mark as Complete</a>
-                <a href="{% url 'task_edit' task.id %}" class="btn btn-outline-warning">Edit Task</a>
-                <a href="{% url 'task_delete' task.id %}" class="btn btn-outline-danger">Delete Task</a>
-              </div>
+          <div class="card-body">
+            <h5 class="card-title text-center">{{ task.name }}</h5>
+            <div class="d-grid gap-2">
+              <a
+                href="{% url 'task_complete' task.id %}"
+                class="btn btn-outline-success"
+                >Mark as Complete</a
+              >
+              <a
+                href="{% url 'task_edit' task.id %}"
+                class="btn btn-outline-warning"
+                >Edit Task</a
+              >
+              <a
+                href="{% url 'task_delete' task.id %}"
+                class="btn btn-outline-danger"
+                >Delete Task</a
+              >
             </div>
           </div>
         </div>
+      </div>
       {% endfor %}
     </div>
   </div>
-{% endblock content %}
+
+  <script>
+    // 1. Select the sortable list by ID
+    const sortableList = document.getElementById("item-list");
+
+    // 2. Select the hidden input that holds the CSRF token
+    const csrfToken = document.getElementById("csrf-token").value;
+
+    // 3. Initialize SortableJS on the list
+    new Sortable(sortableList, {
+      animation: 150, // Smooth drag animation
+
+      // 4. Function triggered when the user finishes dragging an item
+      onEnd: function () {
+        // 5. Get all the list items after they’ve been reordered
+        const items = sortableList.querySelectorAll(".task");
+
+        // 6. Map over them to create an array of their data-id attributes (as strings)
+        const order = Array.from(items).map((item) => item.dataset.id);
+
+        // 7. Send the new order to the Django backend using fetch()
+        fetch("/reorder/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json", // Tell Django we're sending JSON
+            "X-CSRFToken": csrfToken, // Include the CSRF token securely!
+          },
+          body: JSON.stringify({ order: order }), // Send the new order list
+        })
+          .then((response) => response.json()) // Convert response to JSON
+          .then((data) => {
+            console.log("Server response:", data); // Log the server response
+          })
+          .catch((error) => {
+            console.error("Error saving new order:", error); // Log any errors
+          });
+      },
+    });
+  </script>
+  {% endblock content %}
+</div>
