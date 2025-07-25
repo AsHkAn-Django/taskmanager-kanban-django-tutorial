@@ -41,6 +41,10 @@ class CustomUserAdmin(BaseUserAdmin):
     ordering = ("email",)
 
 
+@admin.register(Task)
+class TaskAdmin(admin.ModelAdmin):
+    list_display = ("name", "is_complete", "order", "user")
+    ordering = ['order']
+
 
 admin.site.register(CustomUser, CustomUserAdmin)
-admin.site.register(Task)
