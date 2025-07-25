@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.shortcuts import render
 from django.http import JsonResponse
 import json
-from django.views.decorators.csrf import csrf_protect  
+from django.views.decorators.csrf import csrf_protect
 
 
 class IndexView(TemplateView):
@@ -19,11 +19,17 @@ class AddTaskView(CreateView):
     template_name = 'myApp/task_new.html'
     success_url = reverse_lazy('task_list')
 
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
 
 class TaskListView(ListView):
-    model = Task
     template_name = 'myApp/task_list.html'
     context_object_name = 'tasks'
+
+    def get_queryset(self):
+        return Task.objects.filter(user=self.request.user)
 
 
 class TaskUpdateView(UpdateView):

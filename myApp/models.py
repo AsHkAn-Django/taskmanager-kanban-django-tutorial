@@ -1,12 +1,13 @@
 from django.db import models
+from django.conf import settings
 
 
-# Create your models here.
 class Task(models.Model):
     name = models.CharField(max_length=264)
     is_complete = models.BooleanField(default=False)
     order = models.PositiveBigIntegerField(null=True, blank=False)
-    
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
     class Meta:
         ordering = ['order']
 
@@ -15,10 +16,10 @@ class Task(models.Model):
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
-        super().save(*args, **kwargs)
-        
+
         if is_new and self.order is None:
+            super().save(*args, **kwargs)
             self.order = self.pk
             super().save(update_fields=['order'])
-            
-        return super().save(*args, **kwargs)
+        else:
+            super().save(*args, **kwargs)
