@@ -39,7 +39,7 @@ class TaskViewSet(viewsets.ModelViewSet):
         """Move the task one step higher in the list."""
         task = self.get_object()
         task_order = task.order
-        tasks_above = Task.objects.filter(user=task.user, order__lt=task_order).order_by('-order')
+        tasks_above = Task.objects.filter(user=task.user, order__lt=task_order).order_by('order')
         if not tasks_above:
             return Response({"error": f"'{task.name}' is already on top of the list."}, status=status.HTTP_400_BAD_REQUEST)
 
