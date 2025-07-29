@@ -2,27 +2,19 @@ from django.contrib import admin
 from .models import Task
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from users.models import CustomUser
-from django.forms import ModelForm
-from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from users.forms import CustomUserCreationForm, CustomUserChangeForm
 
 
-class UserCreationForm(ModelForm):
-    class Meta:
-        model = CustomUser
-        fields = ("email", "full_name")
 
-
-class UserChangeForm(ModelForm):
-    password = ReadOnlyPasswordHashField()
-
-    class Meta:
-        model = CustomUser
-        fields = ("email", "full_name", "password", "is_active", "is_staff", "is_superuser")
+@admin.register(Task)
+class TaskAdmin(admin.ModelAdmin):
+    list_display = ("name", "is_complete", "order", "user")
+    ordering = ['order']
 
 
 class CustomUserAdmin(BaseUserAdmin):
-    form = UserChangeForm
-    add_form = UserCreationForm
+    form = CustomUserChangeForm
+    add_form = CustomUserCreationForm
     model = CustomUser
     list_display = ("email", "full_name", "is_staff", "is_superuser")
     list_filter = ("is_staff", "is_superuser")
@@ -37,14 +29,14 @@ class CustomUserAdmin(BaseUserAdmin):
             "fields": ("email", "full_name", "password1", "password2"),
         }),
     )
+    add_fieldsets = (
+        (None, {
+            "classes": ("wide",),
+            "fields": ("email", "full_name", "password1", "password2"),
+        }),
+    )
     search_fields = ("email",)
     ordering = ("email",)
-
-
-@admin.register(Task)
-class TaskAdmin(admin.ModelAdmin):
-    list_display = ("name", "is_complete", "order", "user")
-    ordering = ['order']
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
